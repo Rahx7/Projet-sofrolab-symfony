@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modification membre{% endblock %}
+
+{% block body %}
+    <h1>Modification membre</h1>
+
+    {{ include('avatars/_form.html.twig', {'button_label': 'Modifer'}) }}
+
+    <a href="{{ path('app_avatars_index') }}">Retour aux membres</a>
+
+    {# {{ include('avatars/_delete_form.html.twig') }} #}
+{% endblock %}

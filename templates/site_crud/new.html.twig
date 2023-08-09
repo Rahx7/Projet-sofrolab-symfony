@@ -1,0 +1,11 @@
+{% extends 'baseSite.html.twig' %}
+
+{% block title %}New Site{% endblock %}
+
+{% block body %}
+    <h1>Create new Site</h1>
+
+    {{ include('site_crud/_form.html.twig') }}
+
+    <a href="{{ path('app_site_crud_index') }}">back to list</a>
+{% endblock %}

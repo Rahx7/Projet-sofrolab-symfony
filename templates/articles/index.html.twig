@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+   
+
+{% block body %}
+    {# <pre>
+      {{dump(categorie)}}
+    </pre> #}
+
+    {% if articles %}
+        {# <div class="ui clearing divider"></div> #}
+        {# <a href=" {{ path("articles_search",{'search': 'sophrologie'})}} ">  sophrologie </a> | 
+        <a href=" {{ path("articles_search",{'search': 'méditation'})}} ">  méditation </a> |
+        <a href=" {{ path("articles_search",{'search': 'bien-être'})}} ">  bien-être </a>  #}
+        <div class="audioAccueil">
+            {% for article in articles %}
+
+                        <div class="ui raised card">
+                            <div class="content topCont">
+                                <div class="right floated meta ">{{article.created|date("d M," )}}</div>
+                                <img class="ui avatar image" src="{{ asset('upload/' ~ article.getAvatarID.picture)}}"> 
+                                <a href=" {{ path("app_avatars_show",{'id': article.getAvatarID.id})}} "> 
+                                {{article.getAvatarID.pseudo}} </a>
+                            </div>
+                            <div class="image front">
+                                <img src="{{ asset('upload/' ~ article.img)}}"  >
+                            </div>
+                            <div class="content">
+                               <h4> <a href={{ path('article_single', {id:article.id}) }}>{{article.title[0:40]}}</a></h4>
+                                <div class="meta">
+                                    <span class="date">{{article.subTitle[0:60]}}</span>
+                                </div>
+                                <div class="description">
+                                    {% set art = article.intro|slice(0, 200) ~ '...' %}
+                                    {{ art}}
+                                </div>
+                                {# <span class="right floated">
+                                <i class="heart outline like icon"></i>
+                                17 likes
+                                </span>
+                                <i class="comment icon"></i>
+                                3 comments #}
+                                
+                            </div>
+                            <div class="extra content">
+                                <i class="comment icon"></i>
+                                     {{article.getComments|length}} commentaire{% if article.getComments|length > 1 %}{{'s'}}{% endif %}
+                            </div>
+                            <div class="ui extra content">
+                                {# <div class="ui large transparent left icon input">
+                                <i class="heart outline icon"></i>
+                                <input type="text" placeholder="Add Comment...">
+                                </div> #}
+                                <audio class="audio" controls src="{{ asset('upload/' ~ article.src)}}"  style="width:100%; max-width:587px; min-width:200px;" >
+                                    <a href="{{ asset('upload/' ~ article.src)}}" download="{{ asset('upload/' ~ article.src)}}" > </a>
+                                </audio>
+                            </div>
+                        </div>
+
+
+
+            {# <div class="ui five wide column ">
+                <a href={{ path('article_single', {id:article.id}) }}>
+                    <div  class="ui segment blue ">
+                        <img src="{{ asset("upload/" ~ article.img)}}" width="200" />
+            
+                        <div class="ui segments horizontal" >
+                            <div  class="ui segment ">{{article.title}}</div> 
+                            <div  class="ui segment ">article : {{article.id}}</div> 
+                            <div class="ui segment ">{{article.created|date("d M, H:i " )}}</div>
+                        </div> 
+                        
+                    <div class="ui segment "> {{article.description[0:100]}}... </div>
+                </a>
+                <div class="ui clearing divider"></div>
+            {% if app.user and app.user.getAvatar == article.getAvatarID %} 
+
+                <div class="ui grid centered">
+                <a href={{path('articles_delete', {id: article.id})}} class="ui button height red"  >supprimer</a>
+                <a href={{path('articles_update', {id: article.id})}} class="ui button height primary" > modifier </a>
+               </div>
+
+             {% endif %}
+               <div class="ui clearing divider"></div>
+            </div>             
+            </div> #}
+            
+            {% endfor %}
+        
+
+        </div>
+    {% else %}
+        <p class="ui segment red">il n'y a pas d'articles</p>
+    {% endif %}
+
+
+{% endblock %}

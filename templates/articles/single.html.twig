@@ -1,0 +1,207 @@
+{% extends 'base.html.twig' %}
+
+{% block headerMain %}
+    {% if article %}
+
+        <div class="ui container headerMain">
+            <div>
+                <h2>{{article.title }}</h2>
+                <h3>{{article.subTitle}}</h3>
+                <p>Par {{article.getAvatarID.pseudo}}</p>
+
+            </div>
+        <div>
+
+    {% endif %}
+{% endblock %}
+
+
+{% block body %}
+    {# <pre>
+      {{dump(categorie)}}
+    </pre> #}
+
+   
+
+    {% if article %}
+
+        <div class="ui raised card" style="margin: 10px 0!important; width:100%">
+            
+            <div class="content">
+                <div class="right floated meta ">{{article.created|date("d M," )}}</div>
+                <img class="ui avatar image" src="{{ asset('upload/' ~ article.getAvatarID.picture)}}">
+
+                <a href=" {{ path("app_avatars_show",{'id': article.getAvatarID.id})}} "> 
+                                {{article.getAvatarID.pseudo}} 
+                </a>
+                
+            </div>
+            <div class="image">
+                <img src="{{ asset('upload/' ~ article.img)}}" style="max-height: 180px;" >
+            </div>
+            <div class="extra content">
+                {# <div class="ui large transparent left icon input">
+                <i class="heart outline icon"></i>
+                <input type="text" placeholder="Add Comment...">
+                </div> #}
+                <audio class="audio" controls src="{{ asset('upload/' ~ article.src)}}" >
+                    <a href="{{ asset('upload/' ~ article.src)}}" download="{{ asset('upload/' ~ article.src)}}" > </a>
+                </audio>
+            </div>
+            <div class="content">
+                <h4> {{article.title}}</h4>
+                <div class="meta">
+                    <span class="date">{{article.subTitle}}</span>
+                </div>
+
+                <div class="intro">
+                    {{article.intro}}
+                </div>
+
+                <div class="description">
+                    {{article.description|raw}}
+                </div>
+                {# <span class="right floated">
+                <i class="heart outline like icon"></i>
+                17 likes
+                </span>
+                <i class="comment icon"></i>
+                3 comments #}
+                
+            </div>
+
+
+            {% if app.user and app.user.getAvatar == article.getAvatarID %} 
+
+                <div class="content">
+                <span class="left floated" > vous êtes l'administrateur de cet articlre : </span>   
+                <a href={{path('articles_delete', {id: article.id})}} class="right floated" >| supprimer </a>
+                <a href={{path('articles_update', {id: article.id})}} class="right floated" > modifier |  </a>
+                </div>
+                
+            {% endif %}
+
+
+
+            {% if comments is not empty %}
+                <div class="content">
+                    <i class="comment icon"></i>
+
+                        {{article.getComments|length}} commentaire{% if article.getComments|length > 1 %}{{'s'}}{% endif %}
+            
+                    {% for comment in comments %}
+                        <div class="content">
+                            
+                            <div class="commentaire" >{{comment.title}} : {{comment.comment}} </div>
+        
+                        </div>
+                    {% endfor %}
+                </div>
+
+                {% else %}
+                    <div class="content">
+                        <i class="comment icon"></i>
+                                {{article.getComments|length}} commentaire{% if article.getComments|length > 1 %}{{'s'}}{% endif %}
+                    </div>
+            {% endif %}
+
+            {% if app.user and app.user.isVerified == false %}
+                <div class="content addComment">
+                    <div class="header" >Information</div>
+                    <div class="description">
+                        tu pourra ajouter un commentaire quand tu aura validé ton email !
+                    </div>
+                </div>
+            {% endif %}
+        
+            {% if app.user and app.user.isVerified == true %}
+                <div class="content addComment">
+                    <div class="header" >Ajoutez un commentaire</div>
+                    <div class="content">
+                        {{form_start(form , {'action': path('add_comment', {id:article.id})}) }}
+                            {#  #}
+
+                        {{form_row(form.title)}} 
+                        {{form_row(form.comment)}} 
+                        {# {{ form_widget(form) }}
+                        <div style="display:none">  
+                            {{form_row(form.avatar_ID, {'value':app.user.getAvatar.id })}} 
+                            {{form_row(form.article_ID, {'value':article.id})}} 
+                        </div>
+                         #}
+                        {{form_row(form.submit)}} 
+
+                        {{ form_row(form._token) }}
+                        {{ form_end(form, {render_rest: false}) }}
+                    </div>
+                </div>
+            {% endif %}
+        
+    </div>
+        
+            {# <div  class="ui segment blue "> #}
+                {# {% if article.pictures %} 
+                    <div  class="ui segment "><img src={{asset('upload/'~ article.pictures) }} /></div> 
+                {% endif %} #}
+                    {# <div class="ui segments horizontal" >
+                        
+                        <div  class="ui segment ">{{article.title}}</div> 
+                        <div  class="ui segment ">article : {{article.id}}</div> 
+                        <div class="ui segment ">{{article.created|date("d M, H:i " )}}</div>
+                    </div> 
+                        
+                    <div class="ui segment "> {{article.description}}... </div>  #}
+
+                    {# suivre cette catégorie : <a href={{path('categorie_single', {id:article.categorie.id})}} class="" > {{article.categorie.name|upper}}</a> #}
+                    {# {% if app.user and app.user.getAvatar == article.getAvatarID %} 
+
+                        <div class="ui grid centered">
+                            
+                        <a href={{path('articles_delete', {id: article.id})}} class="ui button height red"  >supprimer</a>
+                        <a href={{path('articles_update', {id: article.id})}} class="ui button height primary" > modifier </a>
+                       </div>
+                       
+                     {% endif %} #}
+
+                     {# <div class="ui clearing divider"></div> #}
+{# {{dump(app.user.getAvatar)}}
+{{dump(article)}} #}
+                
+
+            {# </div> #}
+      {% endif %}  
+
+      {# {{dump(comments)}} #}
+
+    {# {% else %}
+        <p class="ui segment red">il n'y a pas de categorie</p>
+     #}
+
+     {% block footerTop %} {#  les texte du footer  #}
+        {# {% if avatar is defined %}
+        <div class="ui container footerTop">
+            <span>{{site.subtitle1}}</span>
+            <div>
+            <h2>{{site.subtitle11}}</h2>
+            <p>{{ site.text1}}</p>
+            </div>
+        <div>
+        <div class="ui container footerTop">
+            <span>{{site.subtitle2}}</span>
+            <div>
+            <h2>{{site.subtitle22}}</h2>
+            <p>{{ site.text2}}</p>
+            </div>
+        <div>
+        <div class="ui container footerTop">
+            <span>{{site.subtitle3}}</span>
+            <div>
+            <h2>{{site.subtitle33}}</h2>
+            <p>{{ site.text3}}</p>
+            </div>
+        <div>
+         {% endif %} #}
+    {% endblock %}
+
+
+{% endblock %}

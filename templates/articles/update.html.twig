@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+
+    <div class="ui segment">
+        <h3>{{article.title}}</h3>
+        {% include "articles/_form.html.twig" with {'formLabel':"modifier"} %}
+    </div>
+    
+
+{% endblock %}

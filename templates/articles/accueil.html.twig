@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+
+
+
+
+
+    {# <pre>
+      {{dump(categorie)}}
+    </pre> #}
+
+    {% for item in articleList %}
+
+    <div class="ui five wide column ">
+            <div  class="ui segment blue ">
+                <div class="ui segments horizontal" >
+                    <div  class="ui segment ">{{item.titre}}</div> 
+                    <div  class="ui segment ">article : {{item.id}}</div> 
+                    <div class="ui segment ">{{item.createdAt|date("d M, H:i " )}}</div>
+                </div> 
+                
+            <div class="ui segment "> {{item.contenu}}... </div>
+        <a href={{ path('article_single', {id:item.id}) }} clas"ui button primary"> voir l'article</a>
+        {# <div class="ui clearing divider"></div>
+        <div class="ui grid centered">
+        <a href={{path('articles_delete', {id: item.id})}} class="ui button height red"  >supprimer</a>
+        <a href={{path('articles_update', {id: item.id})}} class="ui button height primary"  > modifier </a>
+       </div>
+       <div class="ui clearing divider"></div> #}
+                
+    </div>
+    
+    {% endfor %}
+
+
+{% endblock %}

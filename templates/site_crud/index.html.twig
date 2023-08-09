@@ -1,0 +1,57 @@
+{% extends 'baseSite.html.twig' %}
+
+{% block title %}Site index{% endblock %}
+
+{% block body %}
+    <h1>Site index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Intro1</th>
+                <th>Title1</th>
+                <th>Intro</th>
+                <th>Subtitle1</th>
+                <th>Subtitle2</th>
+                <th>Subtitle3</th>
+                <th>Subtitle11</th>
+                <th>Subtitle22</th>
+                <th>Subtitle33</th>
+                <th>Text1</th>
+                <th>Text2</th>
+                <th>Text3</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for site in sites %}
+            <tr>
+                <td>{{ site.id }}</td>
+                <td>{{ site.intro1 }}</td>
+                <td>{{ site.title1 }}</td>
+                <td>{{ site.intro }}</td>
+                <td>{{ site.subtitle1 }}</td>
+                <td>{{ site.subtitle2 }}</td>
+                <td>{{ site.subtitle3 }}</td>
+                <td>{{ site.subtitle11 }}</td>
+                <td>{{ site.subtitle22 }}</td>
+                <td>{{ site.subtitle33 }}</td>
+                <td>{{ site.text1 }}</td>
+                <td>{{ site.text2 }}</td>
+                <td>{{ site.text3 }}</td>
+                <td>
+                    <a href="{{ path('app_site_crud_show', {'id': site.id}) }}">show</a>
+                    <a href="{{ path('app_site_crud_edit', {'id': site.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="11">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_site_crud_new') }}">Create new</a>
+{% endblock %}

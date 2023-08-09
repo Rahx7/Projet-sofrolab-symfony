@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Les Membres de Sofrolab{% endblock %}
+
+{% block body %}
+
+    <div class="ui raised cards">
+        {% for avatar in avatars %}
+            {% if avatar.getUserID.isVerified == true %}
+                <div class="ui card">
+        
+                        <div class="image front">
+                            {#  #}
+                            <img src="{{ asset( 'upload/' ~ avatar.picture) }}" >
+                        {# </a> #}
+                        </div>
+                        
+                    <div class="content">                   
+                        {# <div class="header"> #}
+                            <h4><a href="{{ path('app_avatars_show', {'id': avatar.id}) }}">{{ avatar.pseudo }}</a></h4>
+                        {# </div> #}
+                        <div class="meta">
+                            {% for option in avatar.options %}
+                            | {{ option }} 
+                            {% endfor %}
+                        </div>
+                        <div class="description">
+                            
+                            {{ avatar.cat[0:200] }}...
+                        </div>
+                    </div>
+                    <div class="extra content">
+                        <span class="right floated">
+                            {{ avatar.age }} ans
+                        </span>
+                        <span>
+                            <i class="user icon"></i>
+                            {% set friends = [] %} 
+                            {% for friend in allFriendsUserCertified %}
+                                {% if friend.getAvatarID2 == avatar or friend.getAvatarID1 == avatar %} 
+                                    {% set friends = friends|merge([friend]) %} 
+                                {% endif %} 
+                            {% endfor %}
+                            {{ friends  | length }} Friends
+                        </span>
+                    </div>
+                    {% if app.user and app.user.isVerified == false and app.user.getAvatar == avatar  %}
+                        <div class="content addComment">
+                            <div class="header" >Information</div>
+                            <div class="description">
+                                tu pourra ajouter un commentaire quand tu aura validé ton email !
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if app.user and app.user.getAvatar == avatar and app.user.isVerified == true %}
+                        <div class=" extra content">
+                            <a href="{{ path('app_avatars_edit', {'id2': avatar.id} )}}" class="right floated">modifier</a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+            {# <tr>
+                <td><img src="{{ asset( 'upload/' ~ avatar.picture) }}" width="100"/></td>
+                <td>{{ avatar.pseudo }}</td>
+                <td>{{ avatar.description }}</td>
+                <td>{{ avatar.options ? avatar.options|join(', ') : '' }}</td>
+                <td>{{ avatar.age }}</td>
+                <td>{{ avatar.cat }}</td> #}
+                {# <td>{{ avatar.isVerified ? 'Yes' : 'No' }}</td> #}
+                {# <td>
+                    <a href="{{ path('app_avatars_show', {'id': avatar.id}) }}">voir</a>
+               {% if app.user and app.user.getAvatar == avatar  %}      {#  and if app.user.getAvatar.id == avatar.id#}              
+                    {# <a href="{{ path('app_avatars_edit', {'id2': avatar.id} )}}">modifier</a>
+                {% endif %}
+                </td>
+            </tr>  #}
+        {# {% else %} #}
+    </div>
+{% endblock %}

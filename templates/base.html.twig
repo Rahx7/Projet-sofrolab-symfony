@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <html lang="fr" xml:lang="fr" xmlns="http://www.w3.org/1999/xhtml">
+        <title>{% block title %}Bienvenu sur Sofrolab !{% endblock %}</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.0em%22 font-size=%2296%22>⭐</text></svg>">
+        <link async rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2/dist/semantic.min.css" /> 
+        <link href="{{ asset('css/main.css') }}" rel="stylesheet" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        {% block stylesheets %}   
+        {% endblock %}
+
+        {% block javascripts %}
+            {# {{ encore_entry_script_tags('app') }} #}
+        {% endblock %}
+    </head>
+    <body>
+
+        {% if app.user %} 
+            {# {{dump(app.user.getAvatar.picture)}} #}
+            <div class="headerAvatar">
+
+                <div> 
+                    <img src="{{ asset('upload/' ~ app.user.getAvatar.picture) }}" width="40" />
+                     <a href="{{ path('app_avatars_show', {'id': app.user.getAvatar.id}) }}"> 
+                        {{ app.user.getAvatar.pseudo }}
+                    </a>
+                </div>
+                
+                <div>
+                    {% if is_granted('ROLE_EDITOR') %}
+                        <a href={{path('articles_save')}} class="item"  >{{'Ajouter un article'}}</a>                
+                    {% endif %}
+                </div>
+                <div>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href={{path('admin')}} >{{'Admin'}}  </a>  |    
+                        <a href="/site/crud" >{{'Textes site'}}  </a>  |               
+                    {% endif %}
+                    <a href={{path('app_logout')}} >déconnexion</a>         
+                </div>
+
+            </div>
+
+
+            {% set amis, demande, ami = 0,0,[] %}
+                {% if friends is defined  %}
+                    {% for friend in friends %}
+                        {% if ((friend.getAvatarID2 == app.user.getAvatar) and (friend.getVerified == false )) %}    
+                            {# {% set amis = 1 %}       #}
+                            {% set ami = ami|merge([friend.getAvatarID1]) %}                                                     
+                        {# {% else %} #}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                {% if ami[0] is defined %}
+                    <div class="headerAvatar" style="justify-content: left ;"> vous avez une demande d'amitié avec :              
+                        {% for am in ami %}
+                            {# {{dump(am.id)}} #}
+                           <a href=" {{ path("app_avatars_show",{'id': am.id})}} "> {{ am.pseudo }} </a>, 
+                        {% endfor %}   
+                    </div>
+                {% endif %}
+
+        {% endif %}
+
+        {% set accueil, articl, membr, log, reg = null, null, null, null, null %}
+
+            {% if app.request.getPathInfo == '/'  %}
+                {% set accueil = "active" %}
+            {% elseif "articles" in app.request.getPathInfo %}
+                {% set articl = "active" %}
+            {% elseif "avatars" in app.request.getPathInfo %}
+                {% set membr = "active" %}
+            {% elseif "login" in app.request.getPathInfo %}
+                {% set log = "active" %}
+            {% elseif "register" in app.request.getPathInfo %}
+                {% set reg = "active" %}
+            {% endif %}
+
+        <header style="margin-bottom: 10px;">   
+            <div class="ui container blue inverted menu">
+                <a class="item {{ accueil }} " href="/"  >
+                    SOFROLAB 
+                </a>
+                <a class="item {{ articl }}" href="/articles">
+                    Articles
+                </a>
+                <a class="item {{ membr }}" href="/avatars">
+                    Membres
+                </a>
+
+                
+                <div class="right menu inscription">
+                    {% if not app.user %} 
+                            <a href={{path('app_register')}} class="item {{ reg }}"  >inscription</a>
+                            <a href={{path('app_login')}} class="item {{ log }}"  >connexion</a>
+                    {% endif %}
+                </div>    
+
+                
+{#                 
+               
+                    <div class="item">
+                    <div class="ui transparent icon input">
+                        <input type="text" placeholder="Search...">
+                        <i class="search link icon"></i>
+                    
+                    </div> #}
+                </div>
+
+        </header>
+
+        {% for type, messages in app.flashes %}
+            {% for item in messages %}
+               <div class="ui {{type}} message">
+                {#     <i class="close icon"> </i>#}
+                    <div class="header">{{type}} </div>
+                    <p>{{item}} </p>
+                </div>
+            {% endfor %}  
+        {% endfor %}
+
+
+        <main class="ui container main">
+
+           
+            {# {{dump(app.request.requestUri )}} #}
+            {% if app.request.attributes.get('_route') == 'app_home' 
+            or app.request.attributes.get('_route') == 'articles' or app.request.attributes.get('_route') == 'app_avatars_index'  %}
+                {% if site is defined %}
+                    <div class="ui container headerMain">
+                        <div>
+                            <h2>{{site.title1}}</h2>
+                            <h3>{{site.intro1}}</h3>
+                            <p>{{ site.intro | raw }}</p>
+
+                        </div>
+                    <div>
+                {% endif %}
+            {% endif %}
+
+            {% block headerMain %} 
+            {% endblock %}
+
+
+
+            {% block body %}
+                
+            {% endblock %}  
+
+
+        </main>
+        
+
+        <footer>
+           
+           
+            {# {{dump(app.request.attributes.get('_route') )}}
+            {{dump(app.request.requestUri )}}
+            {{dump(app.request )}} #}
+            {# mes dernier utillisateur enregistrés #}
+            {% if lastUser is defined %}
+
+                {% if app.request.attributes.get('_route') != 'app_home'   %}
+                    <div class="ui container divider"></div>
+                {% endif %}
+            
+                <div class="ui container raised segments">
+                    
+                    <h3 class="ui top attached blue segment">les derniers inscrits</h3>
+                    <div class="ui segment">
+                        <div class="ui cards leftFloated" >
+
+                            {% for User in lastUser %}
+
+
+
+                                    {% set ok = 0 %} 
+
+                                    {% if app.user %}
+                                        {% for friend in friends %}
+                                            {% if ((friend.getAvatarID1 == app.user.getAvatar) 
+                                            and (friend.getAvatarID2 == User.getAvatar)) 
+                                            or ((friend.getAvatarID2 == app.user.getAvatar) 
+                                            and (friend.getAvatarID1 == User.getAvatar)) 
+                                            %}                            
+                                                {% set ok = 1 %}  
+
+                                            {# {% else %} #}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+
+                                {# {{ dump(lastUser)}} #}
+
+                                {% if User.isVerified %}   
+
+                                    
+                                        <div class="ui card petite">
+                                            <div class="small image">
+                                                <a href=" {{ path("app_avatars_show",{'id': User.getAvatar.id})}} ">
+                                                    <img class="ui small image" src="{{ asset('upload/' ~ User.getAvatar.picture) }}">
+                                                </a>
+                                            </div>
+                                            <div class="content">
+                                                <a href=" {{ path("app_avatars_show",{'id': User.getAvatar.id} )}} " class="header">
+                                                    {{User.getAvatar.pseudo[0:15]}}
+                                                </a>
+                                                <div class="description">
+                                                    {{User.getAvatar.cat[0:40]}}...
+                                                </div>
+                                            </div>
+                                            <div class="extra content">
+                                                <a>
+                                                <i class="user icon"></i>
+                                                22 Friends
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                        {# {% if app.user and app.user.getAvatar != User.getAvatar and ok != 1 and app.user.isVerified %} 
+                                            <a href="{{ path("add_friend",{'id': User.getAvatar.id}) }}" title="ajouter en ami">
+                                                <i class="green plus icon" style="margin-left:5px" ></i>    
+                                            </a>
+                                        {% endif %} #}
+                                
+                                {% endif %}
+
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+            {% endif %}
+
+
+
+                {% if lastComments[0] is defined %}
+                    <div class="ui container divider"></div>
+
+                    
+                    <div class="ui container raised segments">    
+                        <h3 class="ui top attached blue segment">les derniers commentaires</h3> 
+                        <div class="ui segment"> 
+                            
+                            <div class="ui comments">
+                                {% for comment in lastComments %}   
+
+
+                                    
+                                        <div class="comment">
+                                            <span class="avatar">
+                                                <img  src="{{ asset('upload/' ~ comment.getAvatarID.picture) }}">
+                                            </span>
+                                            <div class="content">
+                                                <a href="{{ path('article_single', {id:comment.getArticleID.id}) }}" class="author">
+                                                    {{comment.getAvatarID.pseudo}}
+                                                </a>
+                                                <div class="metadata">
+                                                    <i class="star icon"></i>
+                                                    date et son
+                                                </div>
+
+                                                <div class="text">{{comment.title}}</div>
+
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="ui divider"></div>
+                                    
+
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                {% endif %}
+
+            {% block footerTop %}         
+            {% endblock %} 
+
+
+                {% if app.request.attributes.get('_route') != 'app_register' and app.request.attributes.get('_route') != 'app_login'%}
+                <div class="ui container divider"></div>
+                {% endif %}
+
+                <div class="ui blue inverted vertical footer segment {% if app.request.attributes.get('_route') == 'app_register' or app.request.attributes.get('_route') == 'app_login'  %} log{% endif %}"> 
+
+                    <div class="ui container">
+                        <div class="ui divided stackable grid">
+
+                          
+                                <div class="ten wide column">
+                                    <h4 class="ui inverted header">A propos</h4>
+                                    <p class="ui small paragraphe">
+                                        Ce site a été créé par Rahulax, all right reserved, grâce à symfony 6 et semantic ui </br>
+                                        Pour toute demande, renseignement, réclamation, envoyez un mail à l'adresse reçu lors du mail de confirmation.
+                                        Vous pouvez utiliser les textes et audios dans un cadre non professionnel.
+                                    </p>
+                                </div>
+                            
+                            {% if app.request.attributes.get('_route') != 'app_register' and app.request.attributes.get('_route') != 'app_login'  %}
+                                <div class="six wide column">
+                                    <h4 class="ui inverted header">Réseaux Sociaux</h4>
+                                    <p>
+                                        <i class="facebook big icon"></i>
+                                        <i class="youtube big icon"></i>
+                                        <i class="instagram big icon"></i>
+
+                                    </p>
+                                </div>
+                            {% endif %}
+
+                        </div>
+                    </div>
+
+                </div>
+           
+
+
+            {% block footer %}
+            
+            {% endblock %} 
+        </footer>
+        {# {{ dump(accueil) }} #}
+        <script src="{{ asset('js/scripts.js') }}"></script>
+
+        <script  src="https://code.jquery.com/jquery-3.1.1.min.js"  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="  crossorigin="anonymous"></script>
+    </body>
+</html>

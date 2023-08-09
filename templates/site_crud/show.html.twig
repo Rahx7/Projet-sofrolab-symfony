@@ -1,0 +1,70 @@
+{% extends 'baseSite.html.twig' %}
+
+{% block title %}Site{% endblock %}
+
+{% block body %}
+    <h1>Site</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ site.id }}</td>
+            </tr>
+            <tr>
+                <th>Intro1</th>
+                <td>{{ site.intro1 }}</td>
+            </tr>
+            <tr>
+                <th>Title1</th>
+                <td>{{ site.title1 }}</td>
+            </tr>
+            <tr>
+                <th>Intro</th>
+                <td>{{ site.intro }}</td>
+            </tr>
+            <tr>
+                <th>Subtitle1</th>
+                <td>{{ site.subtitle1 }}</td>
+            </tr>
+            <tr>
+                <th>Subtitle2</th>
+                <td>{{ site.subtitle2 }}</td>
+            </tr>
+            <tr>
+                <th>Subtitle3</th>
+                <td>{{ site.subtitle3 }}</td>
+            </tr>
+            <tr>
+                <th>Subtitle11</th>
+                <td>{{ site.subtitle11 }}</td>
+            </tr>
+            <tr>
+                <th>Subtitle22</th>
+                <td>{{ site.subtitle22 }}</td>
+            </tr>
+            <tr>
+                <th>Subtitle33</th>
+                <td>{{ site.subtitle33 }}</td>
+            </tr>
+            <tr>
+                <th>Text1</th>
+                <td>{{ site.text1 }}</td>
+            </tr>
+            <tr>
+                <th>Text2</th>
+                <td>{{ site.text2 }}</td>
+            </tr>
+            <tr>
+                <th>Text3</th>
+                <td>{{ site.text3 }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_site_crud_index') }}">back to list</a>
+
+    <a href="{{ path('app_site_crud_edit', {'id': site.id}) }}">edit</a>
+
+    {{ include('site_crud/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,160 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Page avatar de {{ avatar.pseudo }} {% endblock %}
+
+{% block headerMain %}
+    {% if avatar %}
+
+        <div class="ui container headerMain">
+            <div>
+                <h2>{{avatar.pseudo}}</h2>
+                <p>
+                    {% for option in avatar.options %}
+                        | {{ option }} 
+                    {% endfor %}
+                 </p>
+
+            </div>
+        <div>
+
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+
+    <div class="ui raised card" style="width: 100%;">
+                
+        <div class="image">
+            {# <a href="{{ path('app_avatars_show', {'id': avatar.id}) }}"> </a>#}
+            <img src="{{ asset( 'upload/' ~ avatar.picture) }}" style="max-height: 180px;" >
+        </div>
+        
+    <div class="content">
+      
+        <span class="right floated meta">
+
+            {% for friend in friendsUser %}
+                {% if app.user 
+                    and app.user.isVerified 
+                    and (friend.getAvatarID1 != avatar) 
+                    and (friend.getAvatarID1 != app.user.getAvatar) 
+                    and (friend.getAvatarID2 != avatar)
+                    and (friend.getAvatarID2 != app.user.getAvatar)
+                %}  
+                        <a href="{{ path("add_friend", {'id': avatar.getId }) }}">Ajouter</a>
+                {% endif %}
+            {% endfor %}
+
+        </span>
+    
+        <h4>{{ avatar.pseudo }}</h4>
+   
+        <div class="meta">
+            {% for option in avatar.options %}
+                | {{ option }} 
+             {% endfor %}
+        </div>
+        <div class="intro">
+            {{ avatar.cat }}
+        </div>
+        <div class="description">
+            {{ avatar.description|raw }}
+        </div>
+    </div>
+    <div class="extra content">
+        <span class="right floated">
+            {{ avatar.age }} ans
+        </span>
+        <span>
+            <i class="user icon"></i>
+            {{ friendsUserCertified | length }} Friends
+        </span>
+    </div>
+
+    {% if (friendsUserCertified | length) > 0 %}
+        {% for friend in friendsUserCertified %}
+            {% if friend.getAvatarID2 == avatar %}
+                <div class="extra content">
+                    <span>
+                        {# {{ dump(friend.getAvatarID1.pseudo) }} #}
+                        {{ friend.getAvatarID1.pseudo }}
+                    </span>
+                </div>
+            {% else %}
+                <div class="extra content">
+                    <span>
+                        {# {{ dump(friend.getAvatarID1.pseudo) }} #}
+                        {{ friend.getAvatarID2.pseudo }} 
+                    </span>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% if app.user and app.user.isVerified == false and app.user.getAvatar == avatar %}
+        <div class="content">
+            <div class="header" >Information</div>
+            <div class="description">
+                tu pourra modifier ton avatar et ajouter tes informations quand tu aura validé ton email !
+            </div>
+        </div>
+    {% endif %}
+
+    {% if app.user and app.user.getAvatar == avatar and app.user.isVerified %}      {#  and if app.user.getAvatar.id == avatar.id#}
+        {#  #}
+        <div class=" extra content">
+            <a href="{{ path('app_avatars_edit', {'id2': avatar.id} )}}" class="right floated">Modifier mon avatar</a>
+        </div>
+    {% endif %}
+    
+    
+</div>
+
+{% set amiID = 0 %} 
+    {% if app.user %}
+            {% for friend in friendsUser %}
+                {% if (friend.getAvatarID1 == avatar) and (app.user.getAvatar == friend.getAvatarID2) and friend.getVerified == false %}  
+                        <a href="{{ path('valid_friend', {'id2': friend.getId})}}" >Accepter l'amitié </a>
+                        {# {% set amiId = friend.getId %} #}
+                        {# {{dump(friend.getId)}} #}
+                        {# {{dump(amiId)}} #}
+                {% endif %}
+            {% endfor %}
+                {# {% set amiID = 0 %}  #}
+            {% for friend in friendsUserCertified %}
+                   
+                        {% if ((app.user.getAvatar == friend.getAvatarID1 ) or (app.user.getAvatar == friend.getAvatarID2 ))  %}  
+  
+                            <div class="friendMessages">
+                                {% set amiId = friend %}
+
+                                <form method="post"  action="{{'/friend/message/'  ~  amiId}}" >
+                                    <input type="text" name="message" />
+                                    {# <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" > #}
+                                    <button type="submit" /> envoyer </button>
+                                </form >
+
+                            </div> 
+                        {% endif %}     
+                             
+            {% endfor %}
+
+        {# {% endset %} #}
+
+        {# {{ dump(amiID) }} #}
+        {# {% if amiId is defined %}
+            <form method="post"  action="{{'/friend/message/'  ~  amiId}}" >
+                <input type="text" name="message" />
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" >
+                <button type="submit" /> envoyer </button>
+            </form >
+        {% endif %} #}
+    {% endif %}
+
+{% endblock %}
+
+{% block footerTop %} {#  les texte du footer  #}
+
+{% endblock %}
+
+
